@@ -7,7 +7,8 @@ import Index from "./pages/Index";
 import Profile from "./pages/Profile";
 import CreatePost from "./pages/CreatePost";
 import BlogDetail from "./pages/BlogDetail";
-import SpacificCategory from "./pages/spacificCategory";
+import SpacificCategory from "./pages/SpacificCategory";
+
 
 
 const App = () => {
