@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { GoArrowRight } from 'react-icons/go';
-import { useSelector } from 'react-redux';
+
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -10,7 +10,7 @@ const SpacificCategory = () => {
     const [blogs, setBlogs] = useState([]);
 
     const navigate = useNavigate();
-    const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+    
 
     const {category} = useParams()
 

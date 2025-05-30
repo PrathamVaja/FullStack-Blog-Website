@@ -2,7 +2,7 @@ import { setUser } from "@/fetures/user/user.slice";
 import axios from "axios";
 
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import {  useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -13,7 +13,7 @@ const SignIn = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch()
 
-  const user = useSelector(state => state.user)
+ 
  
 
   const handleSubmit = async (e) => {

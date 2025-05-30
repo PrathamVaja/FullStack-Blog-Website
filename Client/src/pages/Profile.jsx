@@ -48,6 +48,8 @@ const Profile = () => {
       toast.error(
         error.response?.data?.message || error.message || "Update failed"
       );
+      setLoading(false)
+     
     }
   };
 

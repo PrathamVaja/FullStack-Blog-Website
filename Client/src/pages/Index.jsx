@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { GoArrowRight, GoSearch } from "react-icons/go";
-import { useSelector } from "react-redux";
+
 import { CiBookmark } from "react-icons/ci";
 import { FaBookmark } from "react-icons/fa";
 
@@ -14,7 +14,6 @@ const Index = () => {
   const [filteredBlogs, setFilteredBlogs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
-  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const [bookmarks , setBookmarks] = useState({})
 
 

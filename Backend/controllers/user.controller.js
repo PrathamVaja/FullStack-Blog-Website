@@ -92,6 +92,11 @@ export const userUpdate = async (req, res) => {
     user.email = email ?? user.email;
     user.bio = bio ?? user.bio;
 
+const existing_Email_check = await User.find({email})
+    if (existing_Email_check) {
+      return res.status(500).json({message : 'Email is already exist , try another'})
+    }
+
     if (req.file) {
       try {
         const uploadResult = await cloudinary.uploader.upload(req.file.path, {

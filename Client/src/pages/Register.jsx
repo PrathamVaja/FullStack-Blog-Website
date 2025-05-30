@@ -17,15 +17,29 @@ const Register = () => {
     const user = {name , email, password}
     
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_API}/user/register`, user );
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_API}/user/register`,
+        user
+      );
 
       if (response.status === 200) {
-        toast.success(response.data.message)
-        navigate('/signin')
+        toast.success(response.data.message);
+        navigate("/signin");
+      } else {
+        toast.error(response.data.message || "Registration failed");
       }
     } catch (error) {
-      toast.error( error.message )
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error(error.message || "An error occurred during registration");
+      }
     }
+    
   };
   return (
     <>
