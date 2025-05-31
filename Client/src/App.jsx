@@ -8,24 +8,26 @@ import Profile from "./pages/Profile";
 import CreatePost from "./pages/CreatePost";
 import BlogDetail from "./pages/BlogDetail";
 import SpacificCategory from "./pages/SpacificCategory";
+import AuthLoader from "./components/AuthLoader";
 
 
 
 const App = () => {
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Index />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/create-post" element={<CreatePost />} />
-          <Route path="/show-post/:id" element={<BlogDetail />} />
-          <Route path="/category/:category" element={<SpacificCategory />} />
-          
-        </Route>
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/register" element={<Register />} />
-      </Routes>
+      <AuthLoader>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Index />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/create-post" element={<CreatePost />} />
+            <Route path="/show-post/:id" element={<BlogDetail />} />
+            <Route path="/category/:category" element={<SpacificCategory />} />
+          </Route>
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/register" element={<Register />} />
+        </Routes>
+      </AuthLoader>
     </>
   );
 };

@@ -31,6 +31,9 @@ const SignIn = () => {
       if (response.status === 200) {
         toast.success(response.data.message);
         dispatch(setUser(response.data.user))
+        localStorage.setItem('token', response.data.token)
+        localStorage.setItem("user", JSON.stringify(response.data.user)); 
+       
         navigate("/");
       }
     } catch (error) {

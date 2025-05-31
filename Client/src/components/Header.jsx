@@ -42,6 +42,8 @@ const Header = () => {
       }
 
       dispatch(removeUser());
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
       toast.success(response.data.message || "Logged out successfully");
       navigate("/");
     } catch (error) {
