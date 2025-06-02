@@ -44,7 +44,7 @@ const SignIn = () => {
     <>
       <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
         <div className="w-full max-w-md bg-white rounded-lg shadow-lg overflow-hidden">
-          {/* Header with gradient text */}
+         
           <div className="p-6 bg-gradient-to-r from-indigo-500 to-purple-500">
             <h1 className="text-3xl font-bold text-white text-center">
               Welcome Back
@@ -54,7 +54,7 @@ const SignIn = () => {
             </p>
           </div>
 
-          {/* Sign In Form */}
+         
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
             <div>
               <label
@@ -98,7 +98,7 @@ const SignIn = () => {
             </button>
           </form>
 
-          {/* Sign Up Link */}
+         
           <div className="px-6 py-4 bg-gray-50 text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{" "}
