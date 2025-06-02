@@ -66,7 +66,7 @@ const Index = () => {
             Discover insightful articles, creative ideas, and inspiring stories
           </p>
 
-          {/* Search Bar */}
+         
           <div className="max-w-md mx-auto relative mb-12">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <GoSearch className="text-gray-400" />
