@@ -24,7 +24,7 @@ const Index = () => {
           `${import.meta.env.VITE_BACKEND_API}/blog/post`
         );
         setBlogs(response.data.blog);
-        setFilteredBlogs(response.data.blog); // Initialize filtered blogs
+        setFilteredBlogs(response.data.blog);
         if (response.status !== 200) {
           toast.error(response.data.error);
         }
