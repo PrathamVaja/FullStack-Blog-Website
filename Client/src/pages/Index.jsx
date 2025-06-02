@@ -35,7 +35,7 @@ const Index = () => {
     fetchBlogs();
   }, []);
 
-  // Search filter function
+
   useEffect(() => {
     const results = blogs.filter(
       (blog) =>
