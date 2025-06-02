@@ -13,8 +13,8 @@ const Index = () => {
   const [blogs, setBlogs] = useState([]);
   const [filteredBlogs, setFilteredBlogs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const navigate = useNavigate();
   const [bookmarks , setBookmarks] = useState({})
+  const navigate = useNavigate();
 
 
   useEffect(() => {
