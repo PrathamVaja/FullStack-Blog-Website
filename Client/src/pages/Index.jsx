@@ -7,6 +7,7 @@ import { GoArrowRight, GoSearch } from "react-icons/go";
 
 import { CiBookmark } from "react-icons/ci";
 import { FaBookmark } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 
 const Index = () => {
@@ -15,6 +16,10 @@ const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [bookmarks , setBookmarks] = useState({})
   const navigate = useNavigate();
+
+
+  const user = useSelector(state => state.user.user._id)
+ 
 
 
   useEffect(() => {
@@ -50,10 +55,66 @@ const Index = () => {
     navigate(`/show-post/${blog.title}`, { state: { id: `${blog._id}` } });
   };
 
-
-  const handleAddBookmark = (id) => {
-    console.log(id);
+  const handleAddBookmark = async (blogId) => {
+    try {
+      const userId = user
+      await axios.post(`${import.meta.env.VITE_BACKEND_API}/blog/bookmark/add`, {
+        blogId,
+        userId,
+      });
+      setBookmarks((prev) => ({
+        ...prev,
+        [blogId]: true,
+      }));
+      toast.success("Bookmarked!");
+    } catch (err) {
+      toast.error("Failed to bookmark");
+    }
   };
+
+
+  
+const handleRemoveBookmark = async (blogId) => {
+  try {
+    const userId = user;
+    await axios.post(
+      `${import.meta.env.VITE_BACKEND_API}/blog/bookmark/remove`,
+      {
+        blogId,
+        userId,
+      }
+    );
+    setBookmarks((prev) => ({
+      ...prev,
+      [blogId]: false,
+    }));
+    toast.success("Bookmark removed!");
+  } catch (err) {
+    toast.error("Failed to remove bookmark");
+  }
+};
+
+  useEffect(() => {
+    const fetchBookmarks = async () => {
+      try {
+        const userId =user;
+        if (!userId) return;
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND_API}/blog/bookmark/showbookmark`,
+          { params: { userId } }
+        );
+        const bookmarked = res.data.blogs?.blogs || [];
+        const bookmarksMap = {};
+        bookmarked.forEach((id) => {
+          bookmarksMap[id._id || id] = true;
+        });
+        setBookmarks(bookmarksMap);
+      } catch (err) {
+        toast.error(err)
+      }
+    };
+    fetchBookmarks();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 sm:px-6 lg:px-8">
@@ -66,7 +127,6 @@ const Index = () => {
             Discover insightful articles, creative ideas, and inspiring stories
           </p>
 
-         
           <div className="max-w-md mx-auto relative mb-12">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <GoSearch className="text-gray-400" />
@@ -151,17 +211,15 @@ const Index = () => {
                     <div
                       onClick={(e) => {
                         e.stopPropagation();
-                        setBookmarks((prev) => ({
-                          ...prev,
-                          [blog._id]: !prev[blog._id],
-                        }));
+                        if (bookmarks[blog._id]) {
+                          handleRemoveBookmark(blog._id);
+                        } else {
+                          handleAddBookmark(blog._id);
+                        }
                       }}
                     >
                       {bookmarks[blog._id] ? (
-                        <FaBookmark
-                          onClick={handleAddBookmark(blog._id)}
-                          className="text-xl"
-                        />
+                        <FaBookmark className="text-xl" />
                       ) : (
                         <CiBookmark className="text-xl" />
                       )}

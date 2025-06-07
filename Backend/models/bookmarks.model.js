@@ -5,15 +5,9 @@ const bookmarkSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
+    unique: true,
   },
-  blog: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Blog",
-    required: true,
-  },
+  blogs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Blog" }],
 });
 
-export const BookmarkBlogs = new mongoose.model(
-  "BookmarkBlogs",
-  bookmarkSchema
-);
+export const BookmarkBlogs = mongoose.model("BookmarkBlogs", bookmarkSchema);

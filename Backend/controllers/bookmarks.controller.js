@@ -1,39 +1,46 @@
-import { Blog } from "../models/blog.model.js";
 import { BookmarkBlogs } from "../models/bookmarks.model.js";
-import { User } from "../models/user.model.js";
 
-export const addBookmarks = async (req, res) => {
-  const { blogid, userid } = req.query;
-
+export const addBookmark = async (req, res) => {
+  const { blogId, userId } = req.body;
   try {
-    const filterUser = await User.findById(userid);
-    if (!filterUser) {
-      return res.status(401).json({ message: "User not found" });
+    let bookmark = await BookmarkBlogs.findOne({ user: userId });
+    if (!bookmark) {
+      bookmark = await BookmarkBlogs.create({ user: userId, blogs: [blogId] });
+    } else if (!bookmark.blogs.includes(blogId)) {
+      bookmark.blogs.push(blogId);
+      await bookmark.save();
     }
+    res.status(201).json({ message: "Bookmarked" });
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ message: "Error bookmarking" });
+  }
+};
 
-    const filterBlog = await Blog.findById(blogid);
-    if (!filterBlog) {
-      return res.status(401).json({ message: "Blog not found" });
+export const removeBookmark = async (req, res) => {
+  const { blogId, userId } = req.body;
+  try {
+    const bookmark = await BookmarkBlogs.findOne({ user: userId });
+    if (bookmark) {
+      bookmark.blogs = bookmark.blogs.filter((id) => id.toString() !== blogId);
+      await bookmark.save();
     }
+    res.status(200).json({ message: "Bookmark removed" });
+  } catch (err) {
+    res.status(500).json({ message: "Error removing bookmark" });
+  }
+};
 
-    // Check if bookmark already exists
-    const existingBookmark = await BookmarkBlogs.findOne({
-      user: userid,
-      blog: blogid,
-    });
-
-    if (existingBookmark) {
-      return res.status(409).json({ message: "Bookmark already exists" });
-    }
-
-    const createBookMark = await BookmarkBlogs.create({
-      user: userid,
-      blog: blogid,
-    });
-
-    return res.status(201).json({ message: "Bookmark added", createBookMark });
+export const showBookmarkedBlog = async (req, res) => {
+  try {
+    const { userId } = req.query;
+    if (!userId) return res.status(400).json({ message: "userId required" });
+    const blogs = await BookmarkBlogs.findOne({ user: userId }).populate(
+      "blogs"
+    );
+    res.status(200).json({ blogs });
   } catch (error) {
-    console.error("Error in addBookmarks:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    console.log(error);
+    res.status(500).json({ message: "Error in bookmark" });
   }
 };
