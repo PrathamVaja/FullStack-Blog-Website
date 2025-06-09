@@ -1,5 +1,5 @@
 import express from 'express'
-import { blogDetail, categoryCollection, createBlog, showPost, specificCategory,  } from '../controllers/blog.controller.js';
+import { blogDetail, blogRecommendation, categoryCollection, createBlog, showPost, specificCategory,  } from '../controllers/blog.controller.js';
 import upload from '../config/multer.js';
 import { addBookmark, removeBookmark, showBookmarkedBlog } from '../controllers/bookmarks.controller.js';
 
@@ -13,6 +13,7 @@ BlogRouter.get("/post/categories/:category", specificCategory);
 BlogRouter.post("/bookmark/add",addBookmark)
 BlogRouter.post("/bookmark/remove",removeBookmark)
 BlogRouter.get("/bookmark/showbookmark", showBookmarkedBlog)
+BlogRouter.get("/recommendation/", blogRecommendation)
 
 
 

@@ -9,19 +9,15 @@ import { CiBookmark } from "react-icons/ci";
 import { FaBookmark } from "react-icons/fa";
 import { useSelector } from "react-redux";
 
-
 const Index = () => {
   const [blogs, setBlogs] = useState([]);
   const [filteredBlogs, setFilteredBlogs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [bookmarks , setBookmarks] = useState({})
+  const [bookmarks, setBookmarks] = useState({});
   const navigate = useNavigate();
 
-
-  const user = useSelector(state => state.user.user._id)
-  const isLoggedIn = useSelector(state => state.user.isLoggedIn)
- 
-
+  const user = useSelector((state) => state.user.user._id);
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -41,7 +37,6 @@ const Index = () => {
     fetchBlogs();
   }, []);
 
-
   useEffect(() => {
     const results = blogs.filter(
       (blog) =>
@@ -53,16 +48,21 @@ const Index = () => {
   }, [searchTerm, blogs]);
 
   const handleBlogDetail = (blog) => {
-    navigate(`/show-post/${blog.title}`, { state: { id: `${blog._id}` } });
+    navigate(`/show-post/${blog.title.replaceAll(" ", "-")}`, {
+      state: { id: `${blog._id}` },
+    });
   };
 
   const handleAddBookmark = async (blogId) => {
     try {
-      const userId = user
-      await axios.post(`${import.meta.env.VITE_BACKEND_API}/blog/bookmark/add`, {
-        blogId,
-        userId,
-      });
+      const userId = user;
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_API}/blog/bookmark/add`,
+        {
+          blogId,
+          userId,
+        }
+      );
       setBookmarks((prev) => ({
         ...prev,
         [blogId]: true,
@@ -73,32 +73,30 @@ const Index = () => {
     }
   };
 
-
-  
-const handleRemoveBookmark = async (blogId) => {
-  try {
-    const userId = user;
-    await axios.post(
-      `${import.meta.env.VITE_BACKEND_API}/blog/bookmark/remove`,
-      {
-        blogId,
-        userId,
-      }
-    );
-    setBookmarks((prev) => ({
-      ...prev,
-      [blogId]: false,
-    }));
-    toast.success("Bookmark removed!");
-  } catch (err) {
-    toast.error("Failed to remove bookmark");
-  }
-};
+  const handleRemoveBookmark = async (blogId) => {
+    try {
+      const userId = user;
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_API}/blog/bookmark/remove`,
+        {
+          blogId,
+          userId,
+        }
+      );
+      setBookmarks((prev) => ({
+        ...prev,
+        [blogId]: false,
+      }));
+      toast.success("Bookmark removed!");
+    } catch (err) {
+      toast.error("Failed to remove bookmark");
+    }
+  };
 
   useEffect(() => {
     const fetchBookmarks = async () => {
       try {
-        const userId =user;
+        const userId = user;
         if (!userId) return;
         const res = await axios.get(
           `${import.meta.env.VITE_BACKEND_API}/blog/bookmark/showbookmark`,
@@ -111,7 +109,7 @@ const handleRemoveBookmark = async (blogId) => {
         });
         setBookmarks(bookmarksMap);
       } catch (err) {
-        toast.error(err)
+        toast.error(err);
       }
     };
     fetchBookmarks();
@@ -219,12 +217,15 @@ const handleRemoveBookmark = async (blogId) => {
                         }
                       }}
                     >
-                      {isLoggedIn?  bookmarks[blog._id] ? (
-                        <FaBookmark className="text-xl" />
+                      {isLoggedIn ? (
+                        bookmarks[blog._id] ? (
+                          <FaBookmark className="text-xl" />
+                        ) : (
+                          <CiBookmark className="text-xl" />
+                        )
                       ) : (
-                        <CiBookmark className="text-xl" />
-                      ) : ''}
-                     
+                        ""
+                      )}
                     </div>
                   </div>
                 </div>

@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import {
   RiHomeLine,
-  RiCompassLine,
   RiBookmarkLine,
   RiFireLine,
   RiHistoryLine,
   RiUserLine,
+  RiBloggerLine,
 } from "react-icons/ri";
+
+
 import { useSelector } from "react-redux";
 import axios from "axios";
 
@@ -59,9 +61,10 @@ const  Sidebar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/explore" className={linkClasses}>
-                <RiCompassLine className="mr-3 text-lg" />
-                <span>Explore</span>
+              <NavLink to="/mypost" className={linkClasses}>
+                <RiBloggerLine className="mr-3 text-lg" />
+
+                <span>My Post</span>
               </NavLink>
             </li>
             <li>

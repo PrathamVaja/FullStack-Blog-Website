@@ -3,8 +3,7 @@ import cloudinary from "../config/cloudinary.js";
 
 export const createBlog = async (req, res) => {
   try {
-      const { title, description, category, createdAt } = req.body;
-     
+    const { title, description, category, createdAt } = req.body;
 
     let bannerUrl = "";
     if (req.file) {
@@ -38,40 +37,31 @@ export const createBlog = async (req, res) => {
   }
 };
 
-
 export const showPost = async (req, res) => {
-  
-  const blog = await Blog.find()
-
+  const blog = await Blog.find();
 
   if (!blog) {
-    res.status(401).json({message:'Blogs are not exist'})
+    res.status(401).json({ message: "Blogs are not exist" });
   }
-res.status(200).json({message:'blogs', blog})
-  
-}
-
-
+  res.status(200).json({ message: "blogs", blog });
+};
 
 export const blogDetail = async (req, res) => {
   const { id } = req.params;
- 
-
 
   const blog = await Blog.findById(id);
 
   if (!blog) {
-   return res.status(401).json({ message: 'Blog not exist' });
+    return res.status(401).json({ message: "Blog not exist" });
   }
 
-  res.status(200).json({message:'Blog Detail',blog})
-}
-
+  res.status(200).json({ message: "Blog Detail", blog });
+};
 
 //show number of blogs of each category
 
-export const categoryCollection = async (req,res) => {
-  const blogs = await Blog.find()
+export const categoryCollection = async (req, res) => {
+  const blogs = await Blog.find();
 
   let category = [];
   blogs.map((ele) => {
@@ -80,30 +70,24 @@ export const categoryCollection = async (req,res) => {
     }
   });
   let listcategory = [];
-  category
-    .map((categoryfilter) => {
-      let singleCategoryData = blogs.filter((ele) => {
-        return ele.category == categoryfilter;
-      });
-      listcategory.push({
-        name: categoryfilter,
-        length: singleCategoryData.length,
-      });
-    })
-   
-  
+  category.map((categoryfilter) => {
+    let singleCategoryData = blogs.filter((ele) => {
+      return ele.category == categoryfilter;
+    });
+    listcategory.push({
+      name: categoryfilter,
+      length: singleCategoryData.length,
+    });
+  });
+
   res.status(200).json({ listcategory });
-
-}
-
+};
 
 export const specificCategory = async (req, res) => {
   try {
-    const  {category}  = req.params;
+    const { category } = req.params;
 
     const blogs = await Blog.find({ category });
-
-   
 
     if (!blogs || blogs.length === 0) {
       return res
@@ -121,5 +105,24 @@ export const specificCategory = async (req, res) => {
 };
 
 
+export const blogRecommendation = async (req, res) => {
+  try {
+    const { category, id } = req.query;
 
+    const removeDetailBlog = await Blog.findById(id);
+
+    const blogs = await Blog.find({ category });
+
+    const filteredBlogs = blogs.filter(
+      (blog) => blog._id.toString() !== removeDetailBlog._id.toString()
+    );
+
+    return res.status(200).json({ blog: filteredBlogs });
+  } catch (error) {
+    console.error("Error fetching category blogs:", error);
+    return res
+      .status(500)
+      .json({ message: "Server error. Please try again later." });
+  }
+};
 

@@ -4,6 +4,13 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FiArrowLeft, FiClock, FiCalendar, FiTag } from "react-icons/fi";
+import { GoArrowRight } from "react-icons/go";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 const BlogDetail = () => {
   const location = useLocation();
@@ -12,19 +19,18 @@ const BlogDetail = () => {
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [recommendBlog, setRecommendBlog] = useState([]);
 
   useEffect(() => {
-    setBlog(null)
+    setBlog(null);
     const fetchBlogDetail = async () => {
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_BACKEND_API}/blog/post/detail/${id}`
         );
-console.log(response)
+
         if (response.status === 200) {
           setBlog(response.data.blog);
-          console.log(response.data.blog);
-          
         } else {
           toast.error(response.data.message || "Failed to fetch blog details");
           setError(response.data.message);
@@ -37,8 +43,6 @@ console.log(response)
       }
     };
 
-
-
     if (id) {
       fetchBlogDetail();
     } else {
@@ -48,10 +52,36 @@ console.log(response)
     }
   }, [id, navigate]);
 
+  const fetchRecommendationBlogs = async () => {
+    const response = await axios.get(
+      `${import.meta.env.VITE_BACKEND_API}/blog/recommendation`,
+      {
+        params: {
+          id: id,
+          category: blog.category,
+        },
+      }
+    );
+    setRecommendBlog(response.data.blog);
+    console.log(response.data.blog);
+  };
+
+  useEffect(() => {
+    fetchRecommendationBlogs();
+  }, [blog]);
+
+  const handlerecommendedBlogDetail = (blog) => {
+    navigate(`/show-post/${blog.title.replaceAll(" ", "-")}`, {
+      state: { id: `${blog._id}` },
+    });
+  };
+
   const formatDate = (dateString) => {
     try {
       const date = new Date(dateString);
-      return isNaN(date.getTime()) ? "Unknown date" : format(date, "MMMM d, yyyy");
+      return isNaN(date.getTime())
+        ? "Unknown date"
+        : format(date, "MMMM d, yyyy");
     } catch (e) {
       console.error("Date formatting error:", e);
       return "Unknown date";
@@ -96,7 +126,7 @@ console.log(response)
           onClick={() => navigate(-1)}
           className="flex items-center text-indigo-600 hover:text-indigo-800 mb-8 transition-all duration-300 group"
         >
-          <FiArrowLeft className="mr-2 transition-transform duration-300 group-hover:-translate-x-1" /> 
+          <FiArrowLeft className="mr-2 transition-transform duration-300 group-hover:-translate-x-1" />
           <span className="font-medium">Back to all blogs</span>
         </button>
 
@@ -124,16 +154,15 @@ console.log(response)
                   </span>
                   <span className="flex items-center">
                     <FiClock className="mr-1.5" />
-                    {Math.ceil(blog.description.split(" ").length / 200)} min read
+                    {Math.ceil(blog.description.split(" ").length / 200)} min
+                    read
                   </span>
                 </div>
               </div>
             </div>
           </div>
 
-       
           <div className="p-6 sm:p-8 lg:p-10">
-            
             <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-8">
               <span className="flex items-center bg-gray-100 px-3 py-1.5 rounded-full">
                 <FiTag className="mr-1.5" />
@@ -141,15 +170,13 @@ console.log(response)
               </span>
             </div>
 
-          
             <div className="prose prose-lg max-w-none">
-              <div 
+              <div
                 className="text-gray-700 leading-relaxed"
                 dangerouslySetInnerHTML={{ __html: blog.description }}
               />
             </div>
 
-          
             {blog.tags?.length > 0 && (
               <div className="mt-12 pt-8 border-t border-gray-200">
                 <h3 className="flex items-center text-sm font-medium text-gray-500 mb-4">
@@ -182,7 +209,9 @@ console.log(response)
                 className="w-20 h-20 rounded-full object-cover border-4 border-white shadow-md"
               />
               <div className="text-center sm:text-left">
-                <h4 className="text-xl font-bold text-gray-900">{blog.author.name}</h4>
+                <h4 className="text-xl font-bold text-gray-900">
+                  {blog.author.name}
+                </h4>
                 <p className="text-indigo-600 text-sm font-medium mt-1">
                   {blog.author.bio || "Writer"}
                 </p>
@@ -190,7 +219,7 @@ console.log(response)
                   {blog.author.stats || "Published multiple articles"}
                 </p>
                 <div className="mt-4 flex justify-center sm:justify-start gap-3">
-                  {['Twitter', 'LinkedIn', 'GitHub'].map((social) => (
+                  {["Twitter", "LinkedIn", "GitHub"].map((social) => (
                     <a
                       key={social}
                       href="#"
@@ -207,24 +236,113 @@ console.log(response)
         )}
 
         {/* Related Posts (Placeholder) */}
-        <div className="mt-16">
+        {/* <div className="mt-16">
           <h3 className="text-2xl font-bold text-gray-800 mb-6 relative before:absolute before:-bottom-1 before:left-0 before:w-12 before:h-1 before:bg-indigo-600">
             You might also like
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((item) => (
-              <div key={item} className="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                <div className="h-48 bg-gradient-to-r from-indigo-100 to-purple-100"></div>
-                <div className="p-5">
-                  <span className="inline-block px-2 py-1 bg-indigo-50 text-indigo-600 text-xs font-medium rounded mb-2">
-                    Category
-                  </span>
-                  <h4 className="font-bold text-gray-800 mb-2 line-clamp-2">Related Post Title {item}</h4>
-                  <p className="text-gray-500 text-sm">Coming soon...</p>
+            {recommendBlog.length > 0 &&
+              recommendBlog.map((blog) => (
+                <div
+                  onClick={() => handlerecommendedBlogDetail(blog)}
+                  key={blog._id}
+                  className="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+                >
+                  <div className="">
+                    <img src={blog.banner} alt="" />
+                  </div>
+
+                  <div className="p-5">
+                    <span className="inline-block px-2 py-1 bg-indigo-50 text-indigo-600 text-xs font-medium rounded mb-2">
+                      {blog.category}
+                    </span>
+                    <h4 className="font-bold text-gray-800 mb-2 line-clamp-2">
+                      {blog.title}
+                    </h4>
+                    <div className="inline-flex items-center text-indigo-600 font-medium hover:text-indigo-800 transition-colors">
+                      Read more <GoArrowRight className="mt-1 ml-2" />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
+        </div> */}
+
+        <div className="mt-16">
+          <h3 className="text-2xl font-bold text-gray-800 mb-6 relative before:absolute before:-bottom-1 before:left-0 before:w-12 before:h-1 before:bg-indigo-600">
+            You might also like
+          </h3>
+
+          {recommendBlog.length > 3 ? (
+            <Swiper
+              modules={[Navigation, Pagination]}
+              spaceBetween={20}
+              navigation
+              pagination={{ clickable: true }}
+              breakpoints={{
+                640: { slidesPerView: 1 },
+                768: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 },
+              }}
+            >
+              {recommendBlog.map((blog) => (
+                <SwiperSlide key={blog._id}>
+                  <div
+                    onClick={() => handlerecommendedBlogDetail(blog)}
+                    className="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer"
+                  >
+                    <div className="h-48">
+                      <img
+                        className="w-full h-full object-cover"
+                        src={blog.banner}
+                        alt="blogBanner"
+                      />
+                    </div>
+                    <div className="p-5">
+                      <span className="inline-block px-2 py-1 bg-indigo-50 text-indigo-600 text-xs font-medium rounded mb-2">
+                        {blog.category}
+                      </span>
+                      <h4 className="font-bold text-gray-800 mb-2 line-clamp-2">
+                        {blog.title}
+                      </h4>
+                      <div className="inline-flex items-center text-indigo-600 font-medium hover:text-indigo-800 transition-colors">
+                        Read more <GoArrowRight className="mt-1 ml-2" />
+                      </div>
+                    </div>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 cursor-pointer gap-6">
+              {recommendBlog.map((blog) => (
+                <div
+                  onClick={() => handlerecommendedBlogDetail(blog)}
+                  key={blog._id}
+                  className=" bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+                >
+                  <div className="h-48">
+                    <img
+                      className="w-full h-full object-cover"
+                      src={blog.banner}
+                      alt="blogBanner"
+                    />
+                  </div>
+                  <div className="p-5">
+                    <span className="inline-block px-2 py-1 bg-indigo-50 text-indigo-600 text-xs font-medium rounded mb-2">
+                      {blog.category}
+                    </span>
+                    <h4 className="font-bold text-gray-800 mb-2 line-clamp-2">
+                      {blog.title}
+                    </h4>
+                    <div className="inline-flex items-center text-indigo-600 font-medium hover:text-indigo-800  transition-colors">
+                      Read more <GoArrowRight className="mt-1 ml-2" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

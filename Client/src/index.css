@@ -163,3 +163,35 @@ html::-webkit-scrollbar {
   /* Chrome, Safari and Opera */
 }
 
+.swiper-button-prev{
+ background-image: linear-gradient(#cd52ee,#4b63ff);
+
+ height: 40px !important;
+ width: 40px !important;
+ border-radius: 50px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+}
+
+.swiper-button-prev::after{
+  font-size: 20px !important;
+  color: white;
+ 
+}
+.swiper-button-next{
+ background-image: linear-gradient(#cd52ee,#4b63ff);
+
+ height: 40px !important;
+ width: 40px !important;
+ border-radius: 50px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+}
+
+.swiper-button-next::after{
+  font-size: 20px !important;
+  color: white;
+ 
+}
