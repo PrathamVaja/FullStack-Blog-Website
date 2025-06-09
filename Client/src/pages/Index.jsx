@@ -19,6 +19,7 @@ const Index = () => {
 
 
   const user = useSelector(state => state.user.user._id)
+  const isLoggedIn = useSelector(state => state.user.isLoggedIn)
  
 
 
@@ -218,11 +219,12 @@ const handleRemoveBookmark = async (blogId) => {
                         }
                       }}
                     >
-                      {bookmarks[blog._id] ? (
+                      {isLoggedIn?  bookmarks[blog._id] ? (
                         <FaBookmark className="text-xl" />
                       ) : (
                         <CiBookmark className="text-xl" />
-                      )}
+                      ) : ''}
+                     
                     </div>
                   </div>
                 </div>

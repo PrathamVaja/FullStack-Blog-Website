@@ -103,7 +103,7 @@ export const specificCategory = async (req, res) => {
 
     const blogs = await Blog.find({ category });
 
-    console.log(blogs)
+   
 
     if (!blogs || blogs.length === 0) {
       return res
@@ -119,3 +119,7 @@ export const specificCategory = async (req, res) => {
       .json({ message: "Server error. Please try again later." });
   }
 };
+
+
+
+
