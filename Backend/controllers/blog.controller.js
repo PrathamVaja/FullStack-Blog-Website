@@ -104,7 +104,6 @@ export const specificCategory = async (req, res) => {
   }
 };
 
-
 export const blogRecommendation = async (req, res) => {
   try {
     const { category, id } = req.query;
@@ -114,7 +113,7 @@ export const blogRecommendation = async (req, res) => {
     const blogs = await Blog.find({ category });
 
     const filteredBlogs = blogs.filter(
-      (blog) => blog._id.toString() !== removeDetailBlog._id.toString()
+      (blog) => blog._id.toString() !== removeDetailBlog._id.toString(),
     );
 
     return res.status(200).json({ blog: filteredBlogs });
@@ -125,4 +124,3 @@ export const blogRecommendation = async (req, res) => {
       .json({ message: "Server error. Please try again later." });
   }
 };
-

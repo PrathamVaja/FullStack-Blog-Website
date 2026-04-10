@@ -6,8 +6,6 @@ import axios from "axios";
 import { FiUpload } from "react-icons/fi";
 import JoditEditor from "jodit-react";
 
-
-
 const CreatePost = ({ placeholder }) => {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
@@ -16,9 +14,6 @@ const CreatePost = ({ placeholder }) => {
   const [preview, setPreview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [content, setContent] = useState("");
-
-  
-
 
   // for jodit editor
   const editor = useRef(null);
@@ -47,7 +42,6 @@ const CreatePost = ({ placeholder }) => {
     if (file) {
       setBanner(file);
       setPreview(URL.createObjectURL(file));
-      
     }
   };
 
@@ -55,9 +49,7 @@ const CreatePost = ({ placeholder }) => {
     e.preventDefault();
     setIsLoading(true);
 
-    
     try {
-     
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_API}/blog/create`,
         {
@@ -75,7 +67,7 @@ const CreatePost = ({ placeholder }) => {
 
       if (response.status === 201) {
         toast.success("Blog created successfully!");
-       
+
         navigate("/");
       }
     } catch (error) {
@@ -83,7 +75,6 @@ const CreatePost = ({ placeholder }) => {
     } finally {
       setIsLoading(false);
     }
-
   };
 
   return (
@@ -139,7 +130,6 @@ const CreatePost = ({ placeholder }) => {
               </Dropzone>
             </div>
 
-            
             <div>
               <label
                 htmlFor="title"
@@ -179,7 +169,6 @@ const CreatePost = ({ placeholder }) => {
               </select>
             </div>
 
-            
             <div className="  ">
               <label
                 htmlFor="description"
@@ -188,16 +177,14 @@ const CreatePost = ({ placeholder }) => {
                 Description
               </label>
               <JoditEditor
-                
                 ref={editor}
                 value={content}
                 config={config}
-                tabIndex={1} 
+                tabIndex={1}
                 onChange={(newContent) => setContent(newContent)}
               />
             </div>
 
-            
             <div className="pt-4">
               <button
                 type="submit"
