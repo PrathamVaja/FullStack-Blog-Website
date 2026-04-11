@@ -1,12 +1,13 @@
 import axios from "axios";
 import { format } from "date-fns";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { GoArrowRight, GoSearch } from "react-icons/go";
 
 import { CiBookmark } from "react-icons/ci";
 import { FaBookmark } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 import { useSelector } from "react-redux";
 
 const Index = () => {
@@ -23,7 +24,7 @@ const Index = () => {
     const fetchBlogs = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_API}/blog/post`
+          `${import.meta.env.VITE_BACKEND_API}/blog/post`,
         );
         setBlogs(response.data.blog);
         setFilteredBlogs(response.data.blog);
@@ -42,7 +43,7 @@ const Index = () => {
       (blog) =>
         blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         blog.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        blog.description.toLowerCase().includes(searchTerm.toLowerCase())
+        blog.description.toLowerCase().includes(searchTerm.toLowerCase()),
     );
     setFilteredBlogs(results);
   }, [searchTerm, blogs]);
@@ -61,7 +62,7 @@ const Index = () => {
         {
           blogId,
           userId,
-        }
+        },
       );
       setBookmarks((prev) => ({
         ...prev,
@@ -81,7 +82,7 @@ const Index = () => {
         {
           blogId,
           userId,
-        }
+        },
       );
       setBookmarks((prev) => ({
         ...prev,
@@ -93,6 +94,22 @@ const Index = () => {
     }
   };
 
+  const handleDelete = async (e, blogId) => {
+    e.stopPropagation();
+    const response = await axios.delete(
+      `${import.meta.env.VITE_BACKEND_API}/blog/delete`,
+      {
+        data: { blogId, userId: user },
+      },
+    );
+    if (response.status === 200) {
+      toast.success("Blog deleted successfully");
+      setBlogs(response.data.blogs);
+    } else {
+      toast.error("Failed to delete blog");
+    }
+  };
+
   useEffect(() => {
     const fetchBookmarks = async () => {
       try {
@@ -100,7 +117,7 @@ const Index = () => {
         if (!userId) return;
         const res = await axios.get(
           `${import.meta.env.VITE_BACKEND_API}/blog/bookmark/showbookmark`,
-          { params: { userId } }
+          { params: { userId } },
         );
         const bookmarked = res.data.blogs?.blogs || [];
         const bookmarksMap = {};
@@ -114,6 +131,8 @@ const Index = () => {
     };
     fetchBookmarks();
   }, []);
+
+  const isAuthor = blogs.some((blog) => blog.user === user);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 sm:px-6 lg:px-8">
@@ -207,25 +226,32 @@ const Index = () => {
                       Read more <GoArrowRight className="mt-1 ml-2" />
                     </div>
 
-                    <div
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (bookmarks[blog._id]) {
-                          handleRemoveBookmark(blog._id);
-                        } else {
-                          handleAddBookmark(blog._id);
-                        }
-                      }}
-                    >
-                      {isLoggedIn ? (
-                        bookmarks[blog._id] ? (
-                          <FaBookmark className="text-xl" />
+                    <div className="flex justify-between items-centers gap-4">
+                      <div
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (bookmarks[blog._id]) {
+                            handleRemoveBookmark(blog._id);
+                          } else {
+                            handleAddBookmark(blog._id);
+                          }
+                        }}
+                      >
+                        {isLoggedIn ? (
+                          bookmarks[blog._id] ? (
+                            <FaBookmark className="text-xl" />
+                          ) : (
+                            <CiBookmark className="text-xl" />
+                          )
                         ) : (
-                          <CiBookmark className="text-xl" />
-                        )
-                      ) : (
-                        ""
-                      )}
+                          ""
+                        )}
+                      </div>
+                      <div onClick={(e) => handleDelete(e, blog._id)}>
+                        {isAuthor && (
+                          <MdDelete className="text-[22px] text-red-500" />
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

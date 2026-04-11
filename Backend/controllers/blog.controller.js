@@ -1,9 +1,10 @@
 import { Blog } from "../models/blog.model.js";
 import cloudinary from "../config/cloudinary.js";
+import { User } from "../models/user.model.js";
 
 export const createBlog = async (req, res) => {
   try {
-    const { title, description, category, createdAt } = req.body;
+    const { title, description, category, userId, createdAt } = req.body;
 
     let bannerUrl = "";
     if (req.file) {
@@ -27,6 +28,7 @@ export const createBlog = async (req, res) => {
       title,
       category,
       description,
+      user: userId,
       createdAt: createdAt || new Date(),
     });
 
@@ -122,5 +124,34 @@ export const blogRecommendation = async (req, res) => {
     return res
       .status(500)
       .json({ message: "Server error. Please try again later." });
+  }
+};
+
+export const deleterBlog = async (req, res) => {
+  const { blogId, userId } = req.body;
+  const blog = await Blog.findById({ _id: blogId });
+
+  if (!blog) {
+    return res.status(404).json({ message: "Blog not found" });
+  }
+
+  if (blog.user.toString() !== userId) {
+    return res
+      .status(403)
+      .json({ message: "Unauthorized to delete this blog" });
+  }
+
+  await Blog.findByIdAndDelete({ _id: blogId });
+  const blogs = await Blog.find();
+  return res.status(200).json({ message: "Blog deleted successfully", blogs });
+};
+
+export const myBlogs = async (req, res) => {
+  const { id } = req.params;
+
+  const userExist = await User.findById(id);
+
+  if (!userExist) {
+    return res.status(401).json({ message: "User not exist" });
   }
 };

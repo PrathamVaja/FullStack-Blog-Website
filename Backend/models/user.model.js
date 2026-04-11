@@ -17,11 +17,9 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
-   
   },
-  bio : {
+  bio: {
     type: String,
-       
   },
   role: {
     type: String,
@@ -30,5 +28,4 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-
-export const User = new mongoose.model("User", userSchema);
+export const User = mongoose.model("User", userSchema);

@@ -10,8 +10,7 @@ import BlogDetail from "./pages/BlogDetail";
 import SpacificCategory from "./pages/SpacificCategory";
 import AuthLoader from "./components/AuthLoader";
 import Bookmarked from "./pages/Bookmarked";
-
-
+import MyPost from "./pages/MyPost";
 
 const App = () => {
   return (
@@ -25,6 +24,7 @@ const App = () => {
             <Route path="/show-post/:id" element={<BlogDetail />} />
             <Route path="/category/:category" element={<SpacificCategory />} />
             <Route path="/bookmarks" element={<Bookmarked />} />
+            <Route path="/mypost" element={<MyPost />} />
           </Route>
           <Route path="/signin" element={<SignIn />} />
           <Route path="/register" element={<Register />} />

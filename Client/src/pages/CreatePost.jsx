@@ -5,6 +5,7 @@ import Dropzone from "react-dropzone";
 import axios from "axios";
 import { FiUpload } from "react-icons/fi";
 import JoditEditor from "jodit-react";
+import { useSelector } from "react-redux";
 
 const CreatePost = ({ placeholder }) => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const CreatePost = ({ placeholder }) => {
   const [preview, setPreview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [content, setContent] = useState("");
+  const userId = useSelector((state) => state.user.user._id);
 
   // for jodit editor
   const editor = useRef(null);
@@ -25,7 +27,7 @@ const CreatePost = ({ placeholder }) => {
         insertImageAsBase64URI: true,
       },
     }),
-    [placeholder]
+    [placeholder],
   );
 
   const categories = [
@@ -57,12 +59,13 @@ const CreatePost = ({ placeholder }) => {
           description: content,
           category,
           file: banner,
+          userId,
         },
         {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        }
+        },
       );
 
       if (response.status === 201) {
@@ -94,7 +97,9 @@ const CreatePost = ({ placeholder }) => {
               </label>
               <Dropzone
                 onDrop={handleBannerUpload}
-                accept="image/*"
+                accept={{
+                  "image/*": [],
+                }}
                 multiple={false}
               >
                 {({ getRootProps, getInputProps }) => (

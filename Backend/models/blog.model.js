@@ -25,6 +25,10 @@ const blogSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
 
   bookmark: {
     type: Boolean,
@@ -37,4 +41,4 @@ const blogSchema = new mongoose.Schema({
   },
 });
 
-export const Blog = new mongoose.model("Blog", blogSchema);
+export const Blog =  mongoose.model("Blog", blogSchema);
