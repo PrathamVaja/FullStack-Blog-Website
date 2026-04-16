@@ -7,7 +7,7 @@ import { GoArrowRight, GoSearch } from "react-icons/go";
 
 import { CiBookmark } from "react-icons/ci";
 import { FaBookmark } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
+
 import { useSelector } from "react-redux";
 
 const Index = () => {
@@ -94,21 +94,7 @@ const Index = () => {
     }
   };
 
-  const handleDelete = async (e, blogId) => {
-    e.stopPropagation();
-    const response = await axios.delete(
-      `${import.meta.env.VITE_BACKEND_API}/blog/delete`,
-      {
-        data: { blogId, userId: user },
-      },
-    );
-    if (response.status === 200) {
-      toast.success("Blog deleted successfully");
-      setBlogs(response.data.blogs);
-    } else {
-      toast.error("Failed to delete blog");
-    }
-  };
+
 
   useEffect(() => {
     const fetchBookmarks = async () => {
@@ -131,8 +117,6 @@ const Index = () => {
     };
     fetchBookmarks();
   }, []);
-
-  const isAuthor = blogs.some((blog) => blog.user === user);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 sm:px-6 lg:px-8">
@@ -190,73 +174,73 @@ const Index = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredBlogs.map((blog) => (
-              <div
-                onClick={() => handleBlogDetail(blog)}
-                key={blog._id}
-                className="group mx-5 bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl cursor-pointer"
-              >
-                <div className="relative overflow-hidden h-60">
-                  <img
-                    src={blog.banner}
-                    alt={blog.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                    <span className="inline-block px-3 py-1 bg-indigo-600 text-white text-sm font-medium rounded-full">
-                      {blog.category}
-                    </span>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs font-medium text-indigo-600">
-                      {blog.category}
-                    </span>
-                    <span className="text-xs text-gray-400">
-                      {format(new Date(blog.createdAt), "MMM d, yyyy")}
-                    </span>
-                  </div>
-                  <h2 className="text-xl font-[600] text-gray-900 mb-3 line-clamp-2">
-                    {blog.title}
-                  </h2>
+            {filteredBlogs.map((blog) => {
+              const isAuthor = blog.user === user;
 
-                  <div className=" flex justify-between items-center ">
-                    <div className="inline-flex items-center text-indigo-600 font-medium hover:text-indigo-800 transition-colors">
-                      Read more <GoArrowRight className="mt-1 ml-2" />
+              return (
+                <div
+                  onClick={() => handleBlogDetail(blog)}
+                  key={blog._id}
+                  className="group mx-5 bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl cursor-pointer"
+                >
+                  <div className="relative overflow-hidden h-60">
+                    <img
+                      src={blog.banner}
+                      alt={blog.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                      <span className="inline-block px-3 py-1 bg-indigo-600 text-white text-sm font-medium rounded-full">
+                        {blog.category}
+                      </span>
                     </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-xs font-medium text-indigo-600">
+                        {blog.category}
+                      </span>
+                      <span className="text-xs text-gray-400">
+                        {format(new Date(blog.createdAt), "MMM d, yyyy")}
+                      </span>
+                    </div>
+                    <h2 className="text-xl font-[600] text-gray-900 mb-3 line-clamp-2 min-h-14 h-full">
+                      {blog.title}
+                    </h2>
 
-                    <div className="flex justify-between items-centers gap-4">
-                      <div
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (bookmarks[blog._id]) {
-                            handleRemoveBookmark(blog._id);
-                          } else {
-                            handleAddBookmark(blog._id);
-                          }
-                        }}
-                      >
-                        {isLoggedIn ? (
-                          bookmarks[blog._id] ? (
-                            <FaBookmark className="text-xl" />
+                    <div className=" flex justify-between items-center ">
+                      <div className="inline-flex items-center text-indigo-600 font-medium hover:text-indigo-800 transition-colors">
+                        Read more <GoArrowRight className="mt-1 ml-2" />
+                      </div>
+
+                      <div className="flex justify-between items-centers gap-4">
+                      
+                        <div
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (bookmarks[blog._id]) {
+                              handleRemoveBookmark(blog._id);
+                            } else {
+                              handleAddBookmark(blog._id);
+                            }
+                          }}
+                        >
+                          {isLoggedIn ? (
+                            bookmarks[blog._id] ? (
+                              <FaBookmark className="text-xl" />
+                            ) : (
+                              <CiBookmark className="text-xl" />
+                            )
                           ) : (
-                            <CiBookmark className="text-xl" />
-                          )
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                      <div onClick={(e) => handleDelete(e, blog._id)}>
-                        {isAuthor && (
-                          <MdDelete className="text-[22px] text-red-500" />
-                        )}
+                            ""
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

@@ -142,16 +142,18 @@ export const deleterBlog = async (req, res) => {
   }
 
   await Blog.findByIdAndDelete({ _id: blogId });
-  const blogs = await Blog.find();
+  const blogs = await Blog.find({ user: userId });
   return res.status(200).json({ message: "Blog deleted successfully", blogs });
 };
 
 export const myBlogs = async (req, res) => {
-  const { id } = req.params;
+  const { userId } = req.query;
 
-  const userExist = await User.findById(id);
+  const blog = await Blog.find({ user: userId });
 
-  if (!userExist) {
-    return res.status(401).json({ message: "User not exist" });
+  if (!blog || blog.length === 0) {
+    return res.status(401).json({ message: "No blogs found for this user" });
   }
+
+  res.status(200).json({ message: "My Blogs", blog });
 };
