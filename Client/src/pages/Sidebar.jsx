@@ -9,18 +9,17 @@ import {
   RiBloggerLine,
 } from "react-icons/ri";
 
-
 import { useSelector } from "react-redux";
 import axios from "axios";
 
-const  Sidebar = () => {
+const Sidebar = () => {
   const [category, setCategory] = useState([]);
 
   useEffect(() => {
     const fetchCategory = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_API}/blog/post/categories`
+          `${import.meta.env.VITE_BACKEND_API}/blog/post/categories`,
         );
         setCategory(response.data.listcategory);
       } catch (error) {

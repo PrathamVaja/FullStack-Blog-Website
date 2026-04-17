@@ -64,6 +64,7 @@ export const blogDetail = async (req, res) => {
 
 export const categoryCollection = async (req, res) => {
   const blogs = await Blog.find();
+  console.log("category Enter");
 
   let category = [];
   blogs.map((ele) => {

@@ -26,7 +26,7 @@ const BlogDetail = () => {
     const fetchBlogDetail = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_API}/blog/post/detail/${id}`
+          `${import.meta.env.VITE_BACKEND_API}/blog/post/${id}`
         );
 
         if (response.status === 200) {

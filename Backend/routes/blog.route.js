@@ -20,10 +20,10 @@ const BlogRouter = express.Router();
 
 BlogRouter.post("/create", upload.single("file"), createBlog);
 BlogRouter.get("/post", showPost);
-BlogRouter.get("/post/:id", blogDetail);
-BlogRouter.get("/post/detail/:id", blogDetail);
 BlogRouter.get("/post/categories", categoryCollection);
 BlogRouter.get("/post/categories/:category", specificCategory);
+BlogRouter.get("/post/:id", blogDetail);
+// BlogRouter.get("/post/detail/:id", blogDetail);
 BlogRouter.post("/bookmark/add", addBookmark);
 BlogRouter.post("/bookmark/remove", removeBookmark);
 BlogRouter.get("/bookmark/showbookmark", showBookmarkedBlog);
