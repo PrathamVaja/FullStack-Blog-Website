@@ -60,7 +60,10 @@ const Sidebar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/mypost" className={linkClasses}>
+              <NavLink
+                to={user.isLoggedIn ? `/mypost/${user.user._id}` : "/signin"}
+                className={linkClasses}
+              >
                 <RiBloggerLine className="mr-3 text-lg" />
 
                 <span>My Post</span>

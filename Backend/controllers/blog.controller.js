@@ -148,9 +148,14 @@ export const deleterBlog = async (req, res) => {
 };
 
 export const myBlogs = async (req, res) => {
-  const { userId } = req.query;
+  console.log("enter controller");
+  console.log(req.params);
+  const { user } = req.params;
+  if (!user) {
+    return res.status(400).json({ message: "Please Login First" });
+  }
 
-  const blog = await Blog.find({ user: userId });
+  const blog = await Blog.find({ user });
 
   if (!blog || blog.length === 0) {
     return res.status(401).json({ message: "No blogs found for this user" });

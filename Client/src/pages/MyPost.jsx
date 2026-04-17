@@ -24,10 +24,7 @@ const MyPost = () => {
     const fetchBlogs = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_API}/blog/myposts`,
-          {
-            params: { userId: user },
-          },
+          `${import.meta.env.VITE_BACKEND_API}/blog/myposts/${user}`,
         );
         setBlogs(response.data.blog);
         setFilteredBlogs(response.data.blog);

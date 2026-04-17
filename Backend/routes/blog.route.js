@@ -29,6 +29,6 @@ BlogRouter.post("/bookmark/remove", removeBookmark);
 BlogRouter.get("/bookmark/showbookmark", showBookmarkedBlog);
 BlogRouter.get("/recommendation/", blogRecommendation);
 BlogRouter.delete("/delete", deleterBlog);
-BlogRouter.get("/myposts", myBlogs);
+BlogRouter.get("/myposts/:user", myBlogs);
 
 export default BlogRouter;
